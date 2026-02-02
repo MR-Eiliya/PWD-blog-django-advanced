@@ -2,7 +2,7 @@ from django.views.generic import TemplateView
 
 
 class IndexView(TemplateView):
-    pass
+    template_name = "website/index.html"
 
 
 class AboutView(TemplateView):

@@ -9,18 +9,18 @@
 
     <link href="https://fonts.googleapis.com/css?family=Work+Sans:400,700,900&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="fonts/icomoon/style.css">
+    <link rel="stylesheet" href="{% static 'fonts/icomoon/style.css' %}">
 
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/bootstrap-datepicker.css">
-    <link rel="stylesheet" href="css/jquery.fancybox.min.css">
-    <link rel="stylesheet" href="css/owl.carousel.min.css">
-    <link rel="stylesheet" href="css/owl.theme.default.min.css">
-    <link rel="stylesheet" href="fonts/flaticon/font/flaticon.css">
-    <link rel="stylesheet" href="css/aos.css">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap-datepicker.css' %}">
+    <link rel="stylesheet" href="{% static 'css/jquery.fancybox.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/owl.theme.default.min.css' %}">
+    <link rel="stylesheet" href="{% static 'fonts/flaticon/font/flaticon.css' %}">
+    <link rel="stylesheet" href="{% static 'css/aos.css' %}">
 
     <!-- MAIN CSS -->
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
 </head>
 
@@ -48,7 +48,7 @@
                     <div class="col-3 ">
                         <div class="site-logo">
                             <a href="index.html" class="font-weight-bold">
-                                <img src="images/logo3.png" alt="Image" class="img-fluid">
+                                <img src="{% static 'images/logo3.png' %}" alt="Image" class="img-fluid">
                             </a>
                         </div>
                     </div>
@@ -79,7 +79,8 @@
 
         </header>
 
-
+        {% block content %}
+        {% endblock %}
 
 
         <footer class="site-footer bg-light">
@@ -89,22 +90,22 @@
                         <h2 class="footer-heading mb-3">Instagram</h2>
                         <div class="row">
                             <div class="col-4 gal_col">
-                                <a href="#"><img src="images/insta_1.jpg" alt="Image" class="img-fluid"></a>
+                                <a href="#"><img src="{% static 'images/insta_1.jpg' %}" alt="Image" class="img-fluid"></a>
                             </div>
                             <div class="col-4 gal_col">
-                                <a href="#"><img src="images/insta_2.jpg" alt="Image" class="img-fluid"></a>
+                                <a href="#"><img src="{% static 'images/insta_2.jpg' %}" alt="Image" class="img-fluid"></a>
                             </div>
                             <div class="col-4 gal_col">
-                                <a href="#"><img src="images/insta_3.jpg" alt="Image" class="img-fluid"></a>
+                                <a href="#"><img src="{% static 'images/insta_3.jpg' %}" alt="Image" class="img-fluid"></a>
                             </div>
                             <div class="col-4 gal_col">
-                                <a href="#"><img src="images/insta_4.jpg" alt="Image" class="img-fluid"></a>
+                                <a href="#"><img src="{% static 'images/insta_4.jpg' %}" alt="Image" class="img-fluid"></a>
                             </div>
                             <div class="col-4 gal_col">
-                                <a href="#"><img src="images/insta_5.jpg" alt="Image" class="img-fluid"></a>
+                                <a href="#"><img src="{% static 'images/insta_5.jpg' %}" alt="Image" class="img-fluid"></a>
                             </div>
                             <div class="col-4 gal_col">
-                                <a href="#"><img src="images/insta_6.jpg" alt="Image" class="img-fluid"></a>
+                                <a href="#"><img src="{% static 'images/insta_6.jpg' %}" alt="Image" class="img-fluid"></a>
                             </div>
                         </div>
                     </div>
@@ -151,22 +152,22 @@
 
     </div>
 
-    <script src="js/jquery-3.3.1.min.js"></script>
-    <script src="js/jquery-migrate-3.0.0.js"></script>
-    <script src="js/popper.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/owl.carousel.min.js"></script>
-    <script src="js/jquery.sticky.js"></script>
-    <script src="js/jquery.waypoints.min.js"></script>
-    <script src="js/jquery.animateNumber.min.js"></script>
-    <script src="js/jquery.fancybox.min.js"></script>
-    <script src="js/jquery.stellar.min.js"></script>
-    <script src="js/jquery.easing.1.3.js"></script>
-    <script src="js/bootstrap-datepicker.min.js"></script>
-    <script src="js/isotope.pkgd.min.js"></script>
-    <script src="js/aos.js"></script>
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/jquery-migrate-3.0.0.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'js/jquery.sticky.js' %}"></script>
+    <script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
+    <script src="{% static 'js/jquery.animateNumber.min.js' %}"></script>
+    <script src="{% static 'js/jquery.fancybox.min.js' %}"></script>
+    <script src="{% static 'js/jquery.stellar.min.js' %}"></script>
+    <script src="{% static 'js/jquery.easing.1.3.js' %}"></script>
+    <script src="{% static 'js/bootstrap-datepicker.min.js' %}"></script>
+    <script src="{% static 'js/isotope.pkgd.min.js' %}"></script>
+    <script src="{% static 'js/aos.js' %}"></script>
 
-    <script src="js/main.js"></script>
+    <script src="{% static 'js/main.js' %}"></script>
 
 </body>
 
