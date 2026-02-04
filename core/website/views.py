@@ -6,8 +6,8 @@ class IndexView(TemplateView):
 
 
 class AboutView(TemplateView):
-    pass
+    template_name = "website/about.html"
 
 
 class ContactView(TemplateView):
-    pass
+    template_name = "website/contact.html"
