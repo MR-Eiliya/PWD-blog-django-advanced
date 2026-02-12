@@ -51,7 +51,7 @@ class AuthView(View):
 
             if user:
                 login(request, user)
-                messages.success(request, f"Welcome Back {user.username}")
+                messages.success(request, "Welcome Back!")
                 return redirect("website:index")
             
             login_form.add_error(None, "Invalid credentials")
@@ -71,7 +71,7 @@ class AuthView(View):
         if register_form.is_valid():
             user = register_form.save()
             login(request, user)
-            messages.success(request, f"Dear {user.username}, your account created successfully!")
+            messages.success(request, "your account created successfully!")
             return redirect("website:index")
         
         return render(request, self.template_name, {

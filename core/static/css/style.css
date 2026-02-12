@@ -1946,3 +1946,17 @@ h1, h2, h3, h4, h5,
 p {
   color: #fff;
 }
+
+.site-navbar .site-navigation .site-menu > li > a.auth-btn{
+  background-color: #773de1 !important;
+  width: 100%;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 25px;
+  text-align: center;
+}
+.site-navbar .site-navigation .site-menu > li > a.auth-btn:hover{
+  background-color: #532c9b !important;
+}

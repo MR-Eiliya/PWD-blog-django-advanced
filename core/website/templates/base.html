@@ -68,6 +68,11 @@
                                 <li><a href="{% url 'website:about' %}" class="nav-link">About</a></li>                            
                                 <li><a href="{% url 'blog:home' %}" class="nav-link">Blog</a></li>
                                 <li><a href="{% url 'website:contact' %}" class="nav-link">Contact</a></li>
+                                {% if user.is_authenticated %}
+                                <li><a href="" class="nav-link">{{ user.username }}</a></li>
+                                {% else %}
+                                <li><a href="{% url 'accounts:auth' %}" class="auth-btn">Login | Sign up</a></li>
+                                {% endif %}
                             </ul>
                         </nav>
                     </div>
