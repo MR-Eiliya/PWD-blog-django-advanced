@@ -17,6 +17,14 @@ class PostListView(ListView):
     ordering = "published_date"
     template_name = "blog/home.html"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["hero_blog"] = (
+            "A blog for ideas, experiments, and real experiences shaped along the way. It’s where thoughts turn into structure, and details actually matter. Some posts dive deep, some stay simple but all of them come from doing the work."
+        )
+
+        return context
+
 
 class PostDetailView(DetailView):
     model = Post
