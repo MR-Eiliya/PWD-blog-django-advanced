@@ -1,0 +1,13 @@
+<div class="sidebar-box" style="border-radius: 12px !important;">
+    <div class="categories">
+        <h3>Categories</h3>
+        {% for category in categories %}
+        <li>
+            <a href="{% url 'blog:category-posts' category.slug %}">
+                {{category.name}}
+                <span>({{category.post_set.count}})</span>
+            </a>
+        </li>
+        {% endfor %}
+    </div>
+</div>

@@ -25,10 +25,13 @@ class CustomUserCreationForm(UserCreationForm):
         fields = ("username", "email", "password1", "password2")
 
     def save(self, commit=True):
-        user = super().save(commit=False)
-        user.email = self.cleaned_data["email"]
-        
+        user = CustomUser(
+            email=self.cleaned_data["email"],
+            username=self.cleaned_data["username"],
+        )
+        user.set_password(self.cleaned_data["password1"])
+
         if commit:
             user.save()
-        
+
         return user

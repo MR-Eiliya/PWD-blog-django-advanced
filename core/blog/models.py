@@ -1,6 +1,6 @@
 from django.db import models
-from django.urls import reverse
-from django.contrib.auth.models import User
+from django.utils.text import slugify
+
 
 class Post(models.Model):
     """
@@ -8,7 +8,6 @@ class Post(models.Model):
     """
 
     author = models.ForeignKey("accounts.Profile", on_delete=models.CASCADE)
-    #author = models.ForeignKey(User, on_delete=models.CASCADE)
     image = models.ImageField(null=True, blank=True)
     title = models.CharField(max_length=255)
     content = models.TextField()
@@ -28,8 +27,13 @@ class Post(models.Model):
     
 class Category(models.Model):
     name = models.CharField(max_length=255)
+    slug = models.SlugField(blank=True, unique=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name
-
 

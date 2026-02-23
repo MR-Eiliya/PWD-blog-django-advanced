@@ -1,0 +1,6 @@
+
+<div class="sidebar-box" style="border-radius: 12px !important;">
+    <h4 style="text-align: center; color: #4d4d4d;">Author</h4>
+    <a href="{% url 'blog:author-posts' post.author.id %}"><h3 class="text-black" style="color: #8845e6 !important; text-align: center !important; margin-bottom: 10px !important; font-size: 150% !important; ">{{post.author.user.username}}</h3></a>
+    <p style="text-align: center !important;">{{post.author.description}}</p>
+</div>

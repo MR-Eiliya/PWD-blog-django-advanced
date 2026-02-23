@@ -1,0 +1,37 @@
+<form method="get" action="{% url 'blog:post-search' %}" class="search-form" style="background-color: transparent;">
+
+    <div style="display:flex; gap:8px;">
+
+        <input 
+            type="text"
+            name="q"
+            class="form-control"
+            placeholder="Search posts..."
+            style="
+                background-color:#43434375;
+                border-radius:15px;
+                padding:10px;
+                flex:1;
+                color:white;
+                margin-right: -7%;
+            "
+        >
+
+        <button 
+            type="submit"
+            style="
+                background:#773ee1;
+                border:none;
+                border-radius:12px;
+                padding:10px 18px;
+                color:white;
+                font-weight:500;
+                cursor:pointer;
+            "
+        >
+            Search
+        </button>
+
+    </div>
+
+</form>

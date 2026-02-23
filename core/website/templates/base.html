@@ -118,11 +118,11 @@
                             <div class="col-lg-6 ml-auto">
                                 <h2 class="footer-heading mb-4">Quick Links</h2>
                                 <ul class="list-unstyled">
-                                    <li><a href="#">About Us</a></li>
-                                    <li><a href="#">Testimonials</a></li>
-                                    <li><a href="#">Terms of Service</a></li>
-                                    <li><a href="#">Privacy</a></li>
-                                    <li><a href="#">Contact Us</a></li>
+                                    <li><a href="{% url 'website:index' %}">Home</a></li>
+                                    <li><a href="{% url 'blog:home' %}">Blog</a></li>
+                                    <li><a href="{% url 'website:contact' %}">Contact us</a></li>
+                                    <li><a href="{% url 'website:about' %}">About us</a></li>
+                                    <li><a href="#">Terms</a></li>
                                 </ul>
                             </div>
                             <div class="col-lg-6">

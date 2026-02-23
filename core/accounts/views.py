@@ -12,6 +12,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.views import LogoutView
 
+User = get_user_model()
 
 class AuthView(View):
     template_name = "accounts/auth.html"
@@ -43,20 +44,25 @@ class AuthView(View):
             identifier = login_form.cleaned_data["identifier"]
             password = login_form.cleaned_data["password"]
 
-            user = authenticate(
-                request,
-                username = identifier,
-                password = password
-            )
+            if "@" in identifier:
+                user_obj = User.objects.filter(email=identifier).first()
+            else:
+                user_obj = User.objects.filter(username=identifier).first()
 
-            if user:
-                login(request, user)
-                messages.success(request, "Welcome Back!")
-                return redirect("website:index")
-            
+            if user_obj:
+                user = authenticate(
+                    request,
+                    username=user_obj.email, 
+                    password=password
+                )
+
+                if user:
+                    login(request, user)
+                    messages.success(request, "Welcome Back!")
+                    return redirect("website:index")
+
             login_form.add_error(None, "Invalid credentials")
 
-        
         return render(request, self.template_name, {
             "login_form": login_form,
             "register_form": register_form,
