@@ -26,144 +26,92 @@
                 <p>{{post.content|linebreaks}}</p>
 
                 <div class="pt-5">
-                    <p>Category: <a href="{% url 'blog:category-posts' post.category.slug %}">{{post.category}}</a>            
+                    {% if post.category and post.category.slug %}
+                    <p>Category: <a href="{% url 'blog:category-posts' post.category.slug %}">{{post.category}}</a></p>
+                    {% else %}
+                    <p>Category: No Category</p>
+                    {% endif %}
                 </div>
 
 
                 <div class="pt-5">
                     <h3 class="mb-5">6 Comments</h3>
                     <ul class="comment-list">
-                        <li class="comment">
-                            <div class="vcard bio">
-                                <img src="images/person_2.jpg" alt="Image">
-                            </div>
-                            <div class="comment-body">
-                                <h3>Jacob Smith</h3>
-                                <div class="meta">January 9, 2018 at 2:21pm</div>
-                                <p>When she reached the first hills of the Italic Mountains, she had a last view back on
-                                    the skyline of her hometown Bookmarksgrove, the headline of Alphabet Village and the
-                                    subline of her own road, the Line Lane. Pityful a rethoric question ran over her
-                                    cheek, then she continued her way.</p>
-                                <p><a href="#" class="reply">Reply</a></p>
-                            </div>
-                        </li>
-
-                        <li class="comment">
-                            <div class="vcard bio">
-                                <img src="images/person_3.jpg" alt="Image">
-                            </div>
-                            <div class="comment-body">
-                                <h3>Chris Meyer</h3>
-                                <div class="meta">January 9, 2018 at 2:21pm</div>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Pariatur quidem laborum
-                                    necessitatibus, ipsam impedit vitae autem, eum officia, fugiat saepe enim sapiente
-                                    iste iure! Quam voluptas earum impedit necessitatibus, nihil?</p>
-                                <p><a href="#" class="reply">Reply</a></p>
-                            </div>
-
-                            <ul class="children">
-                                <li class="comment">
-                                    <div class="vcard bio">
-                                        <img src="images/person_5.jpg" alt="Image">
-                                    </div>
+                        {% for comment in comments %}
+                        {% if not comment.parent %}
+                            <li class="comment">
+                                <div class="comment-body">
+                                    <h3 style="color: #fff !important;">{{comment.name}}</h3>
+                                    <div class="meta">{{comment.created_date|date:"d M Y"}}</div>
+                                    <p>{{comment.message}}</p>
+                                    {% if user.is_staff %}
+                                    <p>
+                                        <a href="?reply={{ comment.id }}" class="reply">Reply</a>
+                                    </p>
+                                    {% endif %}
+                                </div>
+                            {% for reply in comment.replies.all %}
+                                <li class="comment" style="margin-left: 50px;">
                                     <div class="comment-body">
-                                        <h3>Chintan Patel</h3>
-                                        <div class="meta">January 9, 2018 at 2:21pm</div>
-                                        <p>Far far away, behind the word mountains, far from the countries Vokalia and
-                                            Consonantia, there live the blind texts. Separated they live in
-                                            Bookmarksgrove right at the coast of the Semantics, a large language ocean.
-                                        </p>
-                                        <p><a href="#" class="reply">Reply</a></p>
+                                        <h3 style="color: #fff !important;">{{ reply.name }}</h3>
+                                        <div class="meta">{{ reply.created_date|date:"d M Y" }}</div>
+                                        <p>{{ reply.message }}</p>
                                     </div>
-
-
-                                    <ul class="children">
-                                        <li class="comment">
-                                            <div class="vcard bio">
-                                                <img src="images/person_1.jpg" alt="Image">
-                                            </div>
-                                            <div class="comment-body">
-                                                <h3>Jean Doe</h3>
-                                                <div class="meta">January 9, 2018 at 2:21pm</div>
-                                                <p>A small river named Duden flows by their place and supplies it with
-                                                    the necessary regelialia. It is a paradisematic country, in which
-                                                    roasted parts of sentences fly into your mouth.</p>
-                                                <p><a href="#" class="reply">Reply</a></p>
-                                            </div>
-
-                                            <ul class="children">
-                                                <li class="comment">
-                                                    <div class="vcard bio">
-                                                        <img src="images/person_4.jpg" alt="Image">
-                                                    </div>
-                                                    <div class="comment-body">
-                                                        <h3>Ben Afflick</h3>
-                                                        <div class="meta">January 9, 2018 at 2:21pm</div>
-                                                        <p>Even the all-powerful Pointing has no control about the blind
-                                                            texts it is an almost unorthographic life One day however a
-                                                            small line of blind text by the name of Lorem Ipsum decided
-                                                            to leave for the far World of Grammar.</p>
-                                                        <p><a href="#" class="reply">Reply</a></p>
-                                                    </div>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                    </ul>
                                 </li>
-                            </ul>
-                        </li>
+                            {% endfor %}
 
-                        <li class="comment">
-                            <div class="vcard bio">
-                                <img src="images/person_1.jpg" alt="Image">
+                            {% if user.is_staff and request.GET.reply == comment.id|stringformat:"s" %}
+                            <div class="comment-form-wrap" style="margin-left:50px;">
+                                <h3 class="mb-3">Reply to {{ comment.name }}</h3>
+                                <form method="post" action="{% url 'blog:comment-reply' comment.pk %}">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <label for="reply-message">Message</label>
+                                        <textarea name="message" cols="30" rows="5" class="form-control"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="submit" value="Post Reply" class="btn btn-primary btn-md text-white">
+                                    </div>
+                                </form>
                             </div>
-                            <div class="comment-body">
-                                <h3>Jean Doe</h3>
-                                <div class="meta">January 9, 2018 at 2:21pm</div>
-                                <p>Even the all-powerful Pointing has no control about the blind texts it is an almost
-                                    unorthographic life One day however a small line of blind text by the name of Lorem
-                                    Ipsum decided to leave for the far World of Grammar.</p>
-                                <p><a href="#" class="reply">Reply</a></p>
-                            </div>
-                        </li>
+                            {% endif %} 
+                            </li>      
+                        {% endif %}
+                        {% endfor %}
                     </ul>
-                    <!-- END comment-list -->
 
                     <div class="comment-form-wrap pt-5">
                         <h3 class="mb-5">Leave a comment</h3>
-                        <form action="#" class="">
+                        <form method="post" action="{% url 'blog:comment-create' post.pk %}" class="">
+                            {% csrf_token %}
                             <div class="form-group">
                                 <label for="name">Name *</label>
-                                <input type="text" class="form-control" id="name">
+                                <input type="text" class="form-control" name="name">
                             </div>
                             <div class="form-group">
                                 <label for="email">Email *</label>
-                                <input type="email" class="form-control" id="email">
+                                <input type="email" class="form-control" name="email">
                             </div>
-                            <div class="form-group">
-                                <label for="website">Website</label>
-                                <input type="url" class="form-control" id="website">
-                            </div>
+
 
                             <div class="form-group">
                                 <label for="message">Message</label>
-                                <textarea name="" id="message" cols="30" rows="10" class="form-control"></textarea>
+                                <textarea name="message" cols="30" rows="10" class="form-control"></textarea>
                             </div>
                             <div class="form-group">
                                 <input type="submit" value="Post Comment" class="btn btn-primary btn-md text-white">
                             </div>
-
                         </form>
                     </div>
                 </div>
 
             </div>
-            <div class="col-md-4 sidebar">         
-               {% include "blog/post_categories.html" %}
-               
-               {% include "blog/post_author.html" %}
-               
-               {% include "blog/recent_sidebar.html" %}
+            <div class="col-md-4 sidebar">
+                {% include "blog/post_categories.html" %}
+
+                {% include "blog/post_author.html" %}
+
+                {% include "blog/recent_sidebar.html" %}
             </div>
         </div>
     </div>

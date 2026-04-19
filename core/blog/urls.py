@@ -13,6 +13,7 @@ urlpatterns = [
     path('category/<slug:category_slug>/', views.CategoryPostListView.as_view(), name='category-posts'),
     path('author/<int:author_id>/', views.AuthorPostListView.as_view(), name="author-posts"),
     path('post/search/', views.PostSearchListView.as_view(), name="post-search"),
+    path('post/<int:pk>/comment/add/', views.CommentCreateView.as_view(), name="comment-create"),
+    path("post/<int:pk>/comment/reply/", views.CommentReplyView.as_view(), name="comment-reply"),
     
-
 ]

@@ -6,19 +6,23 @@ from django.views.generic import (
     UpdateView,
     DeleteView,
 )
-from .models import Post, Category
+from .models import Post, Category, Comment
 from accounts.models import Profile
-from .forms import PostForm
-from django.shortcuts import get_object_or_404
+from .forms import PostForm, CommentForm
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse_lazy
 from django.contrib.auth import get_user_model
 from django.db.models import Q
+from django.contrib.auth.mixins import UserPassesTestMixin
+
+
 
 User = get_user_model()
 
 class PostListView(ListView):
     model = Post
     context_object_name = "posts"
-    paginate_by = 4
+    paginate_by = 6
     ordering = "published_date"
     template_name = "blog/home.html"
 
@@ -38,6 +42,8 @@ class PostDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["categories"] = Category.objects.all()
+        context["comments"] = self.object.comment_set.all()
+        context["form"] = CommentForm()
         return context
     
 
@@ -115,3 +121,55 @@ class PostSearchListView(ListView):
             )
 
         return queryset
+
+
+
+class CommentCreateView(CreateView):
+    model = Comment
+    form_class = CommentForm
+    template_name = "blog/post_detail.html"
+
+
+    def form_valid(self, form):
+        post = get_object_or_404(Post, pk=self.kwargs['pk'])
+        form.instance.post = post
+        #form.instance.approved = False
+        form.save()
+        return redirect(self.get_success_url())
+    
+
+    def get_success_url(self):
+        return reverse_lazy('blog:post-detail', kwargs={'pk': self.kwargs['pk']})
+    
+
+    def form_invalid(self, form):
+        post = get_object_or_404(Post, pk=self.kwargs['pk'])
+        #comments = post.comment_set.filter(approved=True)
+        comments = post.comment_set.all()
+        return render(self.request, self.template_name, {
+            'post': post,
+            'form': form,
+            'comments': comments,
+        })
+
+
+class CommentReplyView(UserPassesTestMixin, CreateView):
+    model = Comment
+    form_class = CommentForm
+    template_name = "blog/post_detail.html"
+
+
+    def test_func(self):
+        return self.request.user.is_staff
+    
+    def form_valid(self, form):
+        parent_comment = get_object_or_404(Comment, pk=self.kwargs['pk'])
+        form.instance.parent = parent_comment
+        form.instance.post = parent_comment.post
+        form.instance.name = self.request.user.username
+        form.instance.email = self.request.user.email
+        return super().form_valid(form)
+    
+    def get_success_url(self):
+        return self.object.post.get_absolute_url()
+    
