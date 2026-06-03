@@ -35,47 +35,57 @@
 
 
                 <div class="pt-5">
-                    <h3 class="mb-5">6 Comments</h3>
+                    <h3 class="mb-5">{{comments.count}} Comments</h3>
                     <ul class="comment-list">
                         {% for comment in comments %}
                         {% if not comment.parent %}
-                            <li class="comment">
-                                <div class="comment-body">
-                                    <h3 style="color: #fff !important;">{{comment.name}}</h3>
-                                    <div class="meta">{{comment.created_date|date:"d M Y"}}</div>
-                                    <p>{{comment.message}}</p>
-                                    {% if user.is_staff %}
-                                    <p>
-                                        <a href="?reply={{ comment.id }}" class="reply">Reply</a>
-                                    </p>
-                                    {% endif %}
+                        <li class="comment">
+                            <div class="comment-body">
+                                <h3 style="color: #fff !important;">{{comment.name}}</h3>
+                                <div class="meta">{{comment.created_date|date:"d M Y"}}</div>
+                                <p>{{comment.message}}</p>
+                                {% if user.is_staff %}
+                                
+                                {% endif %}
+                                {% if user.is_authenticated %}
+                                <p>
+                                    <a href="{% url 'blog:comment-reply' post_pk=post.pk parent_pk=comment.pk %}"
+                                        class="reply-button"
+                                        data-url="{% url 'blog:comment-reply' post_pk=post.pk parent_pk=comment.pk %}"
+                                        data-parent-id="{{ comment.pk }}">
+                                        Reply
+                                    </a>
+                                </p>
+                                <p>
+                                    <a href="{% url 'blog:comment-delete' comment.pk %}"  style="background-color: transparent; color: rgb(193, 0, 0) !important; border: none !important;">
+                                        Delete Comment
+                                    </a>
+                                </p>
+                                <div class="reply-section" id="reply-section-{{ comment.pk }}" style="display:none;">
                                 </div>
-                            {% for reply in comment.replies.all %}
-                                <li class="comment" style="margin-left: 50px;">
-                                    <div class="comment-body">
-                                        <h3 style="color: #fff !important;">{{ reply.name }}</h3>
-                                        <div class="meta">{{ reply.created_date|date:"d M Y" }}</div>
-                                        <p>{{ reply.message }}</p>
-                                    </div>
-                                </li>
-                            {% endfor %}
-
-                            {% if user.is_staff and request.GET.reply == comment.id|stringformat:"s" %}
-                            <div class="comment-form-wrap" style="margin-left:50px;">
-                                <h3 class="mb-3">Reply to {{ comment.name }}</h3>
-                                <form method="post" action="{% url 'blog:comment-reply' comment.pk %}">
-                                    {% csrf_token %}
-                                    <div class="form-group">
-                                        <label for="reply-message">Message</label>
-                                        <textarea name="message" cols="30" rows="5" class="form-control"></textarea>
-                                    </div>
-                                    <div class="form-group">
-                                        <input type="submit" value="Post Reply" class="btn btn-primary btn-md text-white">
-                                    </div>
-                                </form>
+                                {% endif %}
                             </div>
-                            {% endif %} 
-                            </li>      
+                        </li>
+                        {% for reply in comment.replies.all %}
+                        <li class="comment" style="margin-left: 50px;">
+                            <div class="comment-body">
+                                <h3 style="color: #fff !important;">{{ reply.name }}</h3>
+                                <div class="meta">{{ reply.created_date|date:"d M Y" }}
+                                    • Reply to {{ comment.name }}
+                                </div>
+                                <p>{{ reply.message }}</p>
+                                <p>
+                                    <a href="{% url 'blog:comment-delete' reply.pk %}"
+                                    style="background-color: transparent; color: rgb(193, 0, 0) !important; border: none !important;">
+                                    Delete Reply
+                                    </a>
+                                </p>
+                            </div>
+                        </li>
+                        {% if user.is_staff %}
+                        
+                        {% endif %}
+                        {% endfor %}
                         {% endif %}
                         {% endfor %}
                     </ul>
@@ -116,5 +126,77 @@
         </div>
     </div>
 </div>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).on('click', '.reply-button', function (e) {
+        e.preventDefault();
+
+        var url = $(this).data('url');
+        var parentId = $(this).data('parent-id');
+        var replySection = $('#reply-section-' + parentId);
+
+        if (replySection.is(':visible')) {
+            replySection.slideUp().html('');
+            return;
+        }
+
+        $.ajax({
+            url: url,
+            type: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            success: function (response) {
+                replySection.html(response);
+                replySection.slideDown();
+            },
+            error: function () {
+                alert('Could not load reply form.');
+            }
+        });
+    });
+
+    $(document).on('click', '.cancel-reply', function (e) {
+        e.preventDefault();
+
+        $(this)
+            .closest('.reply-form-container')
+            .remove();
+    });
+
+    $(document).on('submit', '.ajax-reply-form', function (e) {
+        e.preventDefault();
+
+        var form = $(this);
+        var url = form.attr('action');
+        var formData = form.serialize();
+        var replySection = form.closest('.reply-section');
+
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            success: function (response) {
+                if (response.success) {
+                    location.reload();
+                } else {
+                    replySection.html(response.form_html);
+                }
+            },
+            error: function () {
+                alert('Error submitting reply.');
+            }
+        });
+    });
+</script>
+
+
+
+
 
 {% endblock %}

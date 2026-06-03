@@ -1,0 +1,66 @@
+<div class="reply-form-container" id="reply-form-container-{{ parent_comment.pk }}">
+    <p><strong>Replying to:</strong> {{ parent_comment.name }}</p>
+    <form method="post"
+          action="{% url 'blog:comment-reply' post_pk=post.pk parent_pk=parent_comment.pk %}"
+          class="ajax-reply-form"
+          data-parent-pk="{{ parent_comment.pk }}"
+          data-post-pk="{{ post.pk }}">
+          {% csrf_token %}
+        
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Send Reply</button>
+        <button type="button" class="btn btn-secondary cancel-reply">Cancel</button>
+    </form>
+</div>
+
+<style>
+.reply-form-container {
+    margin-top: 15px;
+    margin-bottom: 15px;
+    padding: 15px;
+    border: 1px solid #eee;
+    background-color: #1a1a1a;
+    border-radius: 5px;
+}
+.reply-form-container p {
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+.ajax-reply-form label {
+    display: block;
+    margin-top: 10px;
+}
+.ajax-reply-form input, .ajax-reply-form textarea {
+    width: 95%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #2d2d2d;
+    border-radius: 4px;
+}
+.ajax-reply-form button {
+    margin-right: 10px;
+    margin-top: 15px;
+}
+</style>
+
+<!-- <script>
+document.querySelector('#reply-form-container-{{ parent_comment.pk }} .cancel-reply').addEventListener('click', function() {
+    document.getElementById('reply-form-container-{{ parent_comment.pk }}').remove();
+});
+</script>
+
+
+<script>
+document.addEventListener('click', function (e) {
+    if (e.target.classList.contains('cancel-reply')) {
+        e.preventDefault();
+        const container = e.target.closest('.reply-form-container');
+        if (container) {
+            container.remove();
+        }
+    }
+});
+</script>
+
+ -->
+
