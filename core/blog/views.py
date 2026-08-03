@@ -10,6 +10,7 @@ from django.views import View
 from .models import Post, Category, Comment
 from accounts.models import Profile
 from .forms import PostForm, CommentForm, CommentReplyForm
+from .mixins import AdminOnlyMixin, AuthorRequiredMixin
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.contrib.auth import get_user_model
@@ -17,15 +18,15 @@ from django.db.models import Q
 from django.contrib.auth.mixins import (
     UserPassesTestMixin, LoginRequiredMixin
 )
-
 from django.urls import reverse
-
 from django.http import JsonResponse
 from django.template.loader import render_to_string
+from django.http import Http404
 
 
 
 User = get_user_model()
+
 
 class PostListView(ListView):
     model = Post
@@ -57,25 +58,30 @@ class PostDetailView(DetailView):
 
 # api
 
-class PostCreateView(CreateView):
+class PostCreateView(AdminOnlyMixin, CreateView):
     model = Post
     form_class = PostForm
-    success_url = "/blog/post"
+    success_url = reverse_lazy("blog:home")
 
     def form_valid(self, form):
-        form.instance.author = self.request.user.profile
+        try:
+            form.instance.author = self.request.user.profile
+        except AttributeError:
+            raise Http404()
         return super().form_valid(form)
     
 
-class PostEditView(UpdateView, LoginRequiredMixin, UserPassesTestMixin):
+class PostEditView(AuthorRequiredMixin, UpdateView):
     model = Post
-    success_url = "/blog/post"
     form_class = PostForm
+    success_url = reverse_lazy("blog:home")
 
 
-class PostDeleteView(DeleteView, LoginRequiredMixin, UserPassesTestMixin):
+
+class PostDeleteView(AuthorRequiredMixin, DeleteView):
     model = Post
-    success_url = "/blog/post"
+    success_url = reverse_lazy("blog:home")
+
 
 
 class CategoryPostListView(ListView):

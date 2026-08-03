@@ -91,26 +91,13 @@
             <div class="container">
                 <div class="row">
                     <div class="col-lg-3">
-                        <h2 class="footer-heading mb-3">Instagram</h2>
+                        <h2 class="footer-heading mb-3">Recent Posts</h2>
                         <div class="row">
+                            {% for post in posts %}
                             <div class="col-4 gal_col">
-                                <a href="#"><img src="{% static 'images/insta_1.jpg' %}" alt="Image" class="img-fluid"></a>
+                                <a href="{% url 'blog:post-detail' pk=post.id %}"><img src="{{post.image.url}}" alt="Image" class="img-fluid" style="width: 100% !important; height: 100% !important;"></a>
                             </div>
-                            <div class="col-4 gal_col">
-                                <a href="#"><img src="{% static 'images/insta_2.jpg' %}" alt="Image" class="img-fluid"></a>
-                            </div>
-                            <div class="col-4 gal_col">
-                                <a href="#"><img src="{% static 'images/insta_3.jpg' %}" alt="Image" class="img-fluid"></a>
-                            </div>
-                            <div class="col-4 gal_col">
-                                <a href="#"><img src="{% static 'images/insta_4.jpg' %}" alt="Image" class="img-fluid"></a>
-                            </div>
-                            <div class="col-4 gal_col">
-                                <a href="#"><img src="{% static 'images/insta_5.jpg' %}" alt="Image" class="img-fluid"></a>
-                            </div>
-                            <div class="col-4 gal_col">
-                                <a href="#"><img src="{% static 'images/insta_6.jpg' %}" alt="Image" class="img-fluid"></a>
-                            </div>
+                            {% endfor %}
                         </div>
                     </div>
                     <div class="col-lg-8 ml-auto">
@@ -122,7 +109,7 @@
                                     <li><a href="{% url 'blog:home' %}">Blog</a></li>
                                     <li><a href="{% url 'website:contact' %}">Contact us</a></li>
                                     <li><a href="{% url 'website:about' %}">About us</a></li>
-                                    <li><a href="#">Terms</a></li>
+                                    
                                 </ul>
                             </div>
                             <div class="col-lg-6">

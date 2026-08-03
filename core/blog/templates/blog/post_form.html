@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="site-section">
+    <div class="container">
+
+        <div class="row justify-content-center">
+
+            <div class="col-md-8">
+
+                <div class="sidebar-box" style="background-color: rgb(32, 32, 32); border-radius: 15px;">
+
+                    <h2 class="mb-4" style="color: #783ee1;">
+                        {% if object %}
+                        Edit Post
+                        {% else %}
+                        Create Post
+                        {% endif %}
+                    </h2>
+
+                    <form method="post" enctype="multipart/form-data" class="post-form">
+
+                        {% csrf_token %}
+
+                        {{ form.as_p }}
+
+                        <button type="submit" class="btn btn-primary">
+                            {% if object %}
+                            Update Post
+                            {% else %}
+                            Create Post
+                            {% endif %}
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<style>
+    .post-form p {
+        color: white;
+    }
+
+
+    .post-form input,
+    .post-form textarea,
+    .post-form select {
+        background-color: #2b2b2b !important;
+        color: white !important;
+        border: 1px solid #444;
+        border-radius: 8px;
+        padding: 10px;
+        width: 100%;
+    }
+
+
+    .post-form input::placeholder,
+    .post-form textarea::placeholder {
+        color: #aaa;
+    }
+
+
+    
+    .post-form input[type="checkbox"] {
+        width: auto !important;
+        margin-right: 10px;
+        transform: scale(1.2);
+    }
+
+
+    .post-form label {
+        color: #ddd;
+    }
+</style>
+{% endblock %}

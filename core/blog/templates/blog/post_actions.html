@@ -1,0 +1,27 @@
+{% if user.is_staff or user.is_authenticated and user.profile == post.author %}
+
+<div class="sidebar-box" style="border-radius: 12px !important;">
+
+    <h4 style="text-align: center; color: #4d4d4d;">
+        Post Actions
+    </h4>
+
+    {% if user.is_staff %}
+        <a href="{% url 'blog:post-create' %}" class="btn btn-primary w-100 mb-3">
+            Add New Post
+        </a>
+    {% endif %}
+
+    {% if user.is_authenticated and user.profile == post.author %}
+        <a href="{% url 'blog:post-edit' post.pk %}" class="btn btn-warning w-100 mb-3">
+            Edit Post
+        </a>
+
+        <a href="{% url 'blog:post-delete' post.pk %}" class="btn btn-danger w-100">
+            Delete Post
+        </a>
+    {% endif %}
+
+</div>
+
+{% endif %}

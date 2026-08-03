@@ -8,14 +8,22 @@
             <div class="row align-items-center justify-content-center text-center">
                 <div class="col-md-5" data-aos="fade-up">
                     {% if category %}
-                        <h1 class="mb-3 text-white">Blog / Category / {{category.name}}</h1>
+                    <h1 class="mb-3 text-white">Blog / Category / {{category.name}}</h1>
                     {% elif author %}
-                        <h1 class="mb-3 text-white">Blog / Author / {{author.user.username}}</h1>
+                    <h1 class="mb-3 text-white">Blog / Author / {{author.user.username}}</h1>
                     {% else %}
-                        <h1 class="mb-3 text-white">Our Blog</h1>
+                    <h1 class="mb-3 text-white">Our Blog</h1>
                     {% endif %}
                     <p>{{ hero_blog }}</p>
                     {% include "blog/search.html" %}
+
+                    {% if user.is_staff %}
+                    <div class="mt-4">
+                        <a href="{% url 'blog:post-create' %}" class="btn btn-primary px-4 py-2">
+                            Create New Post
+                        </a>
+                    </div>
+                    {% endif %}
 
                 </div>
             </div>
@@ -39,9 +47,35 @@
                     <div class="post-entry-1-contents">
                         <h2><a href="{% url 'blog:post-detail' pk=post.id %}">{{post.title}}</a></h2>
                         <span class="meta d-inline-block mb-3">{{post.published_date|date:"d M Y"}}<span
-                                class="mx-2">by</span> <a href="#">{{post.author.user.username}}</a></span>                              
+                                class="mx-2">by</span> <a href="#">{{post.author.user.username}}</a></span>
                         <p>{{post.content|truncatewords:15}}</p>
-                        <span class="mx-2" style="color: #b3b3b3 !important;">category :</span> <a href="{% url 'blog:category-posts' post.category.slug %}">{{post.category.name}}</a></span>
+                        <span class="mx-2" style="color: #b3b3b3 !important;">category :</span> <a
+                            href="{% url 'blog:category-posts' post.category.slug %}">{{post.category.name}}</a></span>
+
+                        <hr>
+
+                        <div class="d-flex justify-content-between align-items-center" style="padding: 0px; border: none !important;">
+
+                            <a href="{% url 'blog:post-detail' post.pk %}" class="text-primary" style="color: #773ee1 !important;">
+                                Read More →
+                            </a>
+
+                            {% if user.is_authenticated and user.profile == post.author %}
+                            <div>
+
+                                <a href="{% url 'blog:post-edit' post.pk %}" class="mr-3" style="color:#f0ad4e;">
+                                    Edit
+                                </a>
+
+                                <a href="{% url 'blog:post-delete' post.pk %}" style="color:#dc3545;">
+                                    Delete
+                                </a>
+
+                            </div>
+                            {% endif %}
+
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -58,18 +92,18 @@
             {% endif %}
 
             {% for num in paginator.page_range %}
-                {% if page_obj.number == num %}
-                    <span class="p-3">{{ num }}</span>
-                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-                    <a href="?page={{ num }}" class="p-3">{{ num }}</a>
+            {% if page_obj.number == num %}
+            <span class="p-3">{{ num }}</span>
+            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %} <a href="?page={{ num }}"
+                class="p-3">{{ num }}</a>
                 {% endif %}
-            {% endfor %}
+                {% endfor %}
 
-            {% if page_obj.has_next %}
+                {% if page_obj.has_next %}
                 <a href="?page={{ page_obj.next_page_number }}" class="p-3">&raquo;</a>
-            {% else %}
+                {% else %}
                 <span class="p-3 text-muted">&raquo;</span>
-            {% endif %}
+                {% endif %}
 
         </div>
         {% endif %}

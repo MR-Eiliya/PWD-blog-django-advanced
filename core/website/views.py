@@ -3,6 +3,7 @@ from django.http import HttpResponseRedirect
 from .forms import ContactForm
 from .models import Contact
 from django.urls import reverse_lazy
+from blog.models import Post
 
 
 class IndexView(TemplateView):
@@ -12,6 +13,11 @@ class IndexView(TemplateView):
         context = super().get_context_data(**kwargs)
         context["hero_index"] = (
             "Explore web development, design, SEO, and e-commerce insights, discover practical tips, and learn how to turn your ideas into real digital experiences."
+        )
+
+        context["posts"] = (
+            Post.objects.filter(status=True)
+            .order_by("-published_date")[:3]
         )
         return context
 

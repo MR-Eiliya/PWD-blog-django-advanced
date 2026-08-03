@@ -9,7 +9,7 @@ class Post(models.Model):
     """
 
     author = models.ForeignKey("accounts.Profile", on_delete=models.CASCADE)
-    image = models.ImageField(null=True, blank=True)
+    image = models.ImageField()
     title = models.CharField(max_length=255)
     content = models.TextField()
     status = models.BooleanField()

@@ -4,8 +4,9 @@ from django.dispatch import receiver
 from .users import CustomUser
 
 
+
 class Profile(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
     image = models.ImageField(blank=True, null=True)
@@ -16,9 +17,9 @@ class Profile(models.Model):
     def __str__(self):
         return self.user.email
     
-    @receiver(post_save, sender=CustomUser)
-    def save_profile(sender, instance, created, **kwargs):
-        if created:
-            Profile.objects.create(user=instance)
+@receiver(post_save, sender=CustomUser)
+def save_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
 
 
