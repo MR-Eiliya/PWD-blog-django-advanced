@@ -16,5 +16,6 @@ urlpatterns = [
     path('post/<int:pk>/comment/add/', views.CommentCreateView.as_view(), name="comment-create"),
     path("post/<int:post_pk>/comment/<int:parent_pk>/reply/", views.CommentReplyView.as_view(), name="comment-reply"),
     path("comment/<int:pk>/delete/", views.CommentDeleteView.as_view(),name="comment-delete"),
+    path("api/v1/", include("blog.api.v1.urls")),
     
 ]
