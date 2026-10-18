@@ -46,7 +46,10 @@ INSTALLED_APPS = [
     'blog',
     'website',
     'rest_framework',
+    "rest_framework.authtoken",
     "django_filters",
+    "drf_yasg",
+    "mail_templated",
     
     
 ]
@@ -139,6 +142,37 @@ MEDIA_ROOT = BASE_DIR / "media"
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
+
+
+
+
+# Rest framework settings
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.BasicAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.TokenAuthentication",
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ]
+}
+
+
+
+# Swagger setting
+SWAGGER_SETTINGS = {
+    "SECURITY_DEFINITIONS": {
+        "Basic": {
+            "type": "basic",
+        },
+        "Bearer": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header",
+        },
+    },
+}
+
+
 
 
 # Default primary key field type
