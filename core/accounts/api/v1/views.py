@@ -25,7 +25,7 @@ import jwt
 from jwt.exceptions import ExpiredSignatureError, InvalidSignatureError
 from rest_framework_simplejwt.tokens import RefreshToken
 from ..utils import EmailThread
-
+from datetime import datetime, timedelta, timezone
 
 User = get_user_model()
 
@@ -200,8 +200,15 @@ class PasswordResetRequestAPIView(generics.GenericAPIView):
 
         payload = {
             "user_id": user_obj.id,
+            "password": user_obj.password,
+            "exp": datetime.now(timezone.utc) + timedelta(minutes=15),
         }
-        token = jwt.encode(payload, settings.SECRET_KEY, algorithm="HS256")
+
+        token = jwt.encode(
+            payload,
+            settings.SECRET_KEY,
+            algorithm="HS256",
+        )
 
         email_obj = EmailMessage(
             "email/password_reset.tpl",
@@ -219,6 +226,7 @@ class PasswordResetRequestAPIView(generics.GenericAPIView):
 
 # API Confirm Password Reset Class
 class SetNewPasswordAPIView(generics.GenericAPIView):
+    
     serializer_class = SetNewPasswordSerializer
 
 
@@ -237,7 +245,22 @@ class SetNewPasswordAPIView(generics.GenericAPIView):
                 {"details": "Invalid token"}, status=status.HTTP_400_BAD_REQUEST
             )
 
-        user_obj = User.objects.get(pk=user_id)
+        try:
+            user_obj = User.objects.get(pk=user_id)
+        except User.DoesNotExist:
+            return Response(
+                {"details": "Invalid token"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        
+
+        if decoded.get("password") != user_obj.password:
+            return Response(
+        {"details": "Invalid or already used token"},
+        status=status.HTTP_400_BAD_REQUEST,
+    )
+
+
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
