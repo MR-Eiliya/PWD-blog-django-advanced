@@ -25,7 +25,10 @@ import jwt
 from jwt.exceptions import ExpiredSignatureError, InvalidSignatureError
 from rest_framework_simplejwt.tokens import RefreshToken
 from ..utils import EmailThread
-from datetime import datetime, timedelta, timezone
+from datetime import timedelta
+from django.utils import timezone
+
+
 
 User = get_user_model()
 
@@ -198,12 +201,19 @@ class PasswordResetRequestAPIView(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         user_obj = serializer.validated_data["user"]
 
+        
         payload = {
-            "user_id": user_obj.id,
-            "password": user_obj.password,
-            "exp": datetime.now(timezone.utc) + timedelta(minutes=15),
+            "user_id": user_obj.pk,
+            "password_reset_at": (
+                user_obj.password_reset_at.isoformat()
+                if user_obj.password_reset_at
+                else None
+            ),
+            "exp": timezone.now() + timedelta(minutes=15),
         }
 
+        
+        
         token = jwt.encode(
             payload,
             settings.SECRET_KEY,
@@ -254,17 +264,25 @@ class SetNewPasswordAPIView(generics.GenericAPIView):
             )
         
 
-        if decoded.get("password") != user_obj.password:
-            return Response(
-        {"details": "Invalid or already used token"},
-        status=status.HTTP_400_BAD_REQUEST,
-    )
+        token_reset_at = decoded.get("password_reset_at")
 
+        current_reset_at = (
+            user_obj.password_reset_at.isoformat()
+            if user_obj.password_reset_at
+            else None
+        )
+
+        if token_reset_at != current_reset_at:
+            return Response(
+                {"details": "Invalid or already used token"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         user_obj.set_password(serializer.validated_data["new_password"])
+        user_obj.password_reset_at = timezone.now()
         user_obj.save()
 
         return Response(

@@ -46,6 +46,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_verified = models.BooleanField(default=False)
 
+    password_reset_at = models.DateTimeField(null=True, blank=True)
+
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username"]
 
