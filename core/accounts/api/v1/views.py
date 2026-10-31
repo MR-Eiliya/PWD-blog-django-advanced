@@ -80,9 +80,10 @@ class CustomDiscardAuthToken(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        request.user.auth_token.delete()
+        if hasattr(request.user, "auth_token"):
+            request.user.auth_token.delete()
+
         return Response(status=status.HTTP_204_NO_CONTENT)
-    
 
 
 # API Class For JWT Create
