@@ -1,6 +1,3 @@
-from rest_framework.permissions import (
-    IsAuthenticated
-)
 from .serializers import PostSerializer, CategorySerializer
 from ...models import Post, Category
 from rest_framework import viewsets
@@ -20,7 +17,6 @@ class PostModelViewSet(viewsets.ModelViewSet):
     search_fields = ["title"]
     ordering_fields = ["published_date"]
     pagination_class = DefaultPagination
-
 
 
 class CategoryModelViewSet(viewsets.ModelViewSet):

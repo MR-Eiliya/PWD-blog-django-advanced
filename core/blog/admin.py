@@ -25,8 +25,8 @@ class CommentAdmin(admin.ModelAdmin):
     list_filter = (
         "email",
         "name",
-        
     )
+
 
 admin.site.register(Post)
 admin.site.register(Category)

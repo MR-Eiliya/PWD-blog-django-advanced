@@ -22,13 +22,11 @@ from django.shortcuts import get_object_or_404
 from django.conf import settings
 from mail_templated import EmailMessage
 import jwt
-from jwt.exceptions import ExpiredSignatureError, InvalidSignatureError
+from jwt.exceptions import ExpiredSignatureError
 from rest_framework_simplejwt.tokens import RefreshToken
 from ..utils import EmailThread
 from datetime import timedelta
 from django.utils import timezone
-
-
 
 User = get_user_model()
 
@@ -59,9 +57,9 @@ class RegistrationAPIView(generics.GenericAPIView):
     def get_tokens_for_user(self, user):
         refresh = RefreshToken.for_user(user)
         return refresh.access_token
-    
 
-# API Token Login Class 
+
+# API Token Login Class
 class CustomObtainAuthToken(ObtainAuthToken):
     serializer_class = CustomAuthTokenSerializer
 
@@ -73,7 +71,7 @@ class CustomObtainAuthToken(ObtainAuthToken):
         user = serializer.validated_data["user"]
         token, created = Token.objects.get_or_create(user=user)
         return Response({"token": token.key, "user_id": user.pk, "email": user.email})
-    
+
 
 # API Token Logout class
 class CustomDiscardAuthToken(APIView):
@@ -97,7 +95,6 @@ class ChangePasswordAPIView(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = ChangePasswordSerializer
 
-
     def get_object(self, queryset=None):
         obj = self.request.user
         return obj
@@ -119,7 +116,6 @@ class ChangePasswordAPIView(generics.GenericAPIView):
                 status=status.HTTP_200_OK,
             )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
 
 
 # API Profile View
@@ -132,11 +128,10 @@ class ProfileAPIView(generics.RetrieveUpdateAPIView):
         queryset = self.get_queryset()
         obj = get_object_or_404(queryset, user=self.request.user)
         return obj
-    
+
 
 # User Activation API View
 class ActivationAPIView(APIView):
-
 
     def get(self, request, *args, **kwargs):
         raw_token = kwargs.get("token")
@@ -202,7 +197,6 @@ class PasswordResetRequestAPIView(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         user_obj = serializer.validated_data["user"]
 
-        
         payload = {
             "user_id": user_obj.pk,
             "password_reset_at": (
@@ -213,8 +207,6 @@ class PasswordResetRequestAPIView(generics.GenericAPIView):
             "exp": timezone.now() + timedelta(minutes=15),
         }
 
-        
-        
         token = jwt.encode(
             payload,
             settings.SECRET_KEY,
@@ -233,13 +225,12 @@ class PasswordResetRequestAPIView(generics.GenericAPIView):
             {"details": "Password reset email sent successfully!"},
             status=status.HTTP_200_OK,
         )
-    
+
 
 # API Confirm Password Reset Class
 class SetNewPasswordAPIView(generics.GenericAPIView):
-    
-    serializer_class = SetNewPasswordSerializer
 
+    serializer_class = SetNewPasswordSerializer
 
     def post(self, request, *args, **kwargs):
         raw_token = kwargs.get("token")
@@ -263,7 +254,6 @@ class SetNewPasswordAPIView(generics.GenericAPIView):
                 {"details": "Invalid token"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        
 
         token_reset_at = decoded.get("password_reset_at")
 

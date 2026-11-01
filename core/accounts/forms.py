@@ -8,13 +8,12 @@ class CustomLoginForm(forms.Form):
         label="Username or Email",
         max_length=255,
         widget=forms.TextInput(attrs={"autofocus": True}),
-    )    
+    )
     password = forms.CharField(
         label="Password",
         strip=False,
         widget=forms.PasswordInput,
     )
-
 
 
 class CustomUserCreationForm(UserCreationForm):

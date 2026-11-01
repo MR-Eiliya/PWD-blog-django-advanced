@@ -3,18 +3,17 @@ from ...models import Post, Category
 from accounts.models import Profile
 from rest_framework.reverse import reverse
 
+
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ["id", "name"]
 
 
-
 class PostSerializer(serializers.ModelSerializer):
     snippet = serializers.ReadOnlyField(source="get_snippet")
     relative_url = serializers.URLField(source="get_absolute_api_url", read_only=True)
     absolute_url = serializers.SerializerMethodField(method_name="get_abs_url")
-
 
     class Meta:
         model = Post
@@ -34,15 +33,13 @@ class PostSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ["author"]
 
-
     def get_abs_url(self, obj):
         request = self.context.get("request")
         return reverse(
-        "blog:api-v1:post-detail",
-        kwargs={"pk": obj.pk},
-        request=request,
-    )
-
+            "blog:api-v1:post-detail",
+            kwargs={"pk": obj.pk},
+            request=request,
+        )
 
     def to_representation(self, instance):
         request = self.context.get("request")
@@ -64,4 +61,3 @@ class PostSerializer(serializers.ModelSerializer):
             user__id=self.context.get("request").user.id
         )
         return super().create(validated_data)
-

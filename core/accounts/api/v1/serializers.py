@@ -7,14 +7,13 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 
-
 # Registration Serializer
 class RegistrationSerializer(serializers.ModelSerializer):
     password1 = serializers.CharField(max_length=255, write_only=True)
 
     class Meta:
         model = CustomUser
-        fields = ["email","username","password","password1"]
+        fields = ["email", "username", "password", "password1"]
 
     def validate(self, attrs):
         if attrs.get("password") != attrs.get("password1"):
@@ -23,12 +22,12 @@ class RegistrationSerializer(serializers.ModelSerializer):
             validate_password(attrs.get("password"))
         except exceptions.ValidationError as e:
             raise serializers.ValidationError({"password": list(e.messages)})
-        return attrs 
-    
+        return attrs
+
     def create(self, validated_data):
         validated_data.pop("password1", None)
         return CustomUser.objects.create_user(**validated_data)
-    
+
 
 # Custom auth token serializer for user login
 class CustomAuthTokenSerializer(serializers.Serializer):
@@ -74,7 +73,6 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         validated_data["email"] = self.user.email
         validated_data["user_id"] = self.user.id
         return validated_data
-    
 
 
 # Serializer for password changing
@@ -95,7 +93,6 @@ class ChangePasswordSerializer(serializers.Serializer):
         return super().validate(attrs)
 
 
-
 # Serializer for profile
 class ProfileSerializer(serializers.ModelSerializer):
     email = serializers.CharField(source="user.email", read_only=True)
@@ -104,7 +101,6 @@ class ProfileSerializer(serializers.ModelSerializer):
         model = Profile
         fields = ("id", "email", "first_name", "last_name", "image", "description")
         read_only_fields = ["email"]
-
 
 
 # Serializer for resending user activation
@@ -124,7 +120,7 @@ class ActivationResendSerializer(serializers.Serializer):
             )
         attrs["user"] = user_obj
         return super().validate(attrs)
-    
+
 
 # Serializer for sending password reset
 class PasswordResetRequestSerializer(serializers.Serializer):
