@@ -30,6 +30,12 @@ class Post(models.Model):
             return reverse('blog:category-posts', kwargs={'category_slug':self.category.slug})
         return None
     
+    def get_absolute_api_url(self):
+        return reverse(
+            "blog:api-v1:post-detail",
+            kwargs={"pk": self.pk}
+        )
+    
     
 class Category(models.Model):
     name = models.CharField(max_length=255)
