@@ -1,0 +1,28 @@
+# Main modules
+Django==5.2.7
+python-decouple==3.8
+Pillow==12.0.0
+
+# Django REST Framework
+djangorestframework==3.16.1
+djangorestframework-simplejwt==5.5.1
+django-filter==25.2
+
+# API Documentation
+drf-yasg[validation]==1.21.11
+
+# Email
+django-mail-templated==2.6.5
+
+# HTTP Requests and Utilities
+requests==2.32.5
+PyJWT==2.10.1
+
+# Refactoring and Tests
+pytest==9.0.2
+pytest-django==4.11.1
+Faker==39.0.0
+
+# Background Tasks
+celery==5.6.0
+redis==7.1.0
