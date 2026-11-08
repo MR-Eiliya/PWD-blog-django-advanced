@@ -22,3 +22,25 @@ services:
       - "5001:80"
     restart: unless-stopped
 
+
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis_blog
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+
+  celery:
+    build: .
+    container_name: celery_worker
+    command: celery -A core worker --loglevel=info
+    volumes:
+      - ./core:/app
+    working_dir: /app
+    environment:
+      - SECRET_KEY=test
+      - DEBUG=True
+    depends_on:
+      - redis
+
