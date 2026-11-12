@@ -152,18 +152,363 @@
                     <div class="post-entry-1-contents">
 
                         <h2><a href="{% url 'blog:post-detail' pk=post.id %}">{{post.title}}</a></h2>
-                        <span class="meta d-inline-block mb-3">{{post.published_date|date:"d M Y"}}<span class="mx-2">by</span> <a
+                        <span class="meta d-inline-block mb-3">{{post.published_date|date:"d M Y"}}<span
+                                class="mx-2">by</span> <a
                                 href="{% url 'blog:author-posts' post.author.id %}">{{post.author.user.username}}</a></span>
                         <p>{{post.content|truncatewords:15}}</p>
                     </div>
                 </div>
             </div>
             {% endfor %}
-            
-           
+
+
         </div>
     </div>
 </div>
+
+
+<div class="site-section">
+    <div class="container" style="max-width: 1200px; width: 100%; padding: 0 20px;">
+
+        <div class="row justify-content-center text-center">
+            <div class="col-md-10">
+                <div class="heading-39101 mb-5">
+                    <span class="backdrop text-center">Technology</span>
+                    <span class="subtitle-39191">Latest Updates</span>
+                    <h3 style="text-shadow: 0 0px 14px #7e57c2;">
+                        Latest Technology News
+                    </h3>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+
+    {% with news_list=technology_news|slice:":6" %}
+
+    <!-- Desktop: Three cards per slide -->
+    <div id="technologyNewsDesktop" class="carousel slide technology-news-carousel technology-news-desktop" data-ride="carousel">
+
+        <div class="carousel-inner">
+
+            {% for news in news_list %}
+
+            {% if forloop.counter0|divisibleby:3 %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                <div class="row">
+                    {% endif %}
+
+                    <div class="col-md-4 mb-3">
+                        <div class="technology-news-card h-100">
+
+                            {% if news.image %}
+                            <img src="{{ news.image }}" alt="{{ news.title }}">
+                            {% else %}
+                            <div class="news-no-image">No Image Available</div>
+                            {% endif %}
+
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <span class="badge badge-primary">Technology</span>
+                                    <span class="text-muted small ml-2">
+                                        {{ news.published_at|date:"d M Y" }}
+                                    </span>
+                                </div>
+
+                                <h5 class="card-title">{{ news.title }}</h5>
+
+                                <div class="text-muted small mb-3">
+                                    Score: {{ news.score }}
+                                    <span class="mx-2">|</span>
+                                    By {{ news.by }}
+                                </div>
+
+                                {% if news.url %}
+                                <a href="{{ news.url }}" target="_blank" rel="noopener noreferrer"
+                                    class="btn btn-outline-primary mt-auto">
+                                    Read Article
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if forloop.counter|divisibleby:3 or forloop.last %}
+                </div>
+            </div>
+            {% endif %}
+
+            {% empty %}
+            <div class="text-center">
+                <p>Technology news is currently unavailable.</p>
+            </div>
+            {% endfor %}
+
+        </div>
+
+        <a class="carousel-control-prev" href="#technologyNewsDesktop" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </a>
+
+        <a class="carousel-control-next" href="#technologyNewsDesktop" role="button" data-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </a>
+    </div>
+
+
+    <!-- Mobile: One card per slide -->
+    <div id="technologyNewsMobile" class="carousel slide technology-news-carousel technology-news-mobile" data-ride="carousel">
+
+        <div class="carousel-inner">
+
+            {% for news in news_list %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+
+                <div class="technology-news-card">
+
+                    {% if news.image %}
+                    <img src="{{ news.image }}" alt="{{ news.title }}">
+                    {% else %}
+                    <div class="news-no-image">No Image Available</div>
+                    {% endif %}
+
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <span class="badge badge-primary">Technology</span>
+                            <span class="text-muted small ml-2">
+                                {{ news.published_at|date:"d M Y" }}
+                            </span>
+                        </div>
+
+                        <h5 class="card-title">{{ news.title }}</h5>
+
+                        <div class="text-muted small mb-3">
+                            Score: {{ news.score }}
+                            <span class="mx-2">|</span>
+                            By {{ news.by }}
+                        </div>
+
+                        {% if news.url %}
+                        <a href="{{ news.url }}" target="_blank" rel="noopener noreferrer"
+                            class="btn btn-outline-primary mt-auto">
+                            Read Article
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
+            {% empty %}
+            <div class="text-center">
+                <p>Technology news is currently unavailable.</p>
+            </div>
+            {% endfor %}
+
+        </div>
+
+        <a class="carousel-control-prev" href="#technologyNewsMobile" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </a>
+
+        <a class="carousel-control-next" href="#technologyNewsMobile" role="button" data-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </a>
+
+    </div>
+
+    {% endwith %}
+
+    <style>
+        /* Technology News Carousel */
+
+        .technology-news-carousel {
+        max-width: 1200px;
+        width: 100%;
+        margin: -5rem auto 0;
+        padding: 0 10px;
+        box-sizing: border-box;
+        margin-top: 0rem;
+        }
+
+        .technology-news-carousel .carousel-inner {
+            border-radius: 18px;
+        }
+
+        .technology-news-carousel .technology-news-card {
+            background-color: #2b2b2b;
+            color: #f5f5f5;
+            border-radius: 16px;
+            overflow: hidden;
+            width: 100%;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .technology-news-carousel .technology-news-card img {
+            display: block;
+            width: 100%;
+            height: 320px;
+            object-fit: cover;
+        }
+
+        .technology-news-carousel .news-no-image {
+            height: 320px;
+            background-color: #252525;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #aaa;
+        }
+
+        .technology-news-carousel .card-body {
+            padding: 30px;
+            min-height: 220px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .technology-news-carousel .card-title {
+            color: #f5f5f5;
+            font-size: 21px;
+            font-weight: 600;
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+
+        .technology-news-carousel .text-muted {
+            color: #aaa !important;
+        }
+
+        .technology-news-carousel .btn {
+            align-self: flex-start;
+            margin-top: auto;
+            border-radius: 8px;
+            padding: 10px 24px;
+        }
+
+        /* Carousel Controls */
+
+        .technology-news-carousel .carousel-control-prev,
+        .technology-news-carousel .carousel-control-next {
+            width: 42px;
+            height: 42px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #2b2b2b;
+            border-radius: 50%;
+            opacity: 1;
+        }
+
+        .technology-news-carousel .carousel-control-prev {
+            left: 0;
+        }
+
+        .technology-news-carousel .carousel-control-next {
+            right: 0;
+        }
+
+        .technology-news-carousel .carousel-control-prev:hover,
+        .technology-news-carousel .carousel-control-next:hover {
+            background-color: #444;
+        }
+
+        /* Mobile Responsive */
+
+        @media (max-width: 767px) {
+            .technology-news-carousel {
+                max-width: 100%;
+                margin-top: -3rem;
+                padding: 0 30px;
+            }
+
+            .technology-news-carousel .technology-news-card img,
+            .technology-news-carousel .news-no-image {
+                height: 190px;
+            }
+
+            .technology-news-carousel .card-body {
+                padding: 18px;
+                min-height: 200px;
+            }
+
+            .technology-news-carousel .card-title {
+                font-size: 17px;
+                line-height: 1.7;
+                margin-bottom: 15px;
+                overflow-wrap: break-word;
+            }
+
+            .technology-news-carousel .carousel-control-prev,
+            .technology-news-carousel .carousel-control-next {
+                width: 28px;
+                height: 28px;
+            }
+
+            .technology-news-carousel .btn {
+                width: 100%;
+                align-self: stretch;
+            }
+        }
+
+
+        /* Desktop and Mobile Carousel Visibility */
+
+        .technology-news-desktop {
+            display: block;
+        }
+
+        .technology-news-mobile {
+            display: none;
+        }
+
+        /* Desktop: Three cards */
+
+        .technology-news-desktop .carousel-item>.row {
+            margin: 0;
+        }
+
+        .technology-news-desktop .carousel-item>.row>div {
+            padding: 0 10px;
+            display: flex;
+        }
+
+        .technology-news-desktop .technology-news-card {
+            width: 100%;
+        }
+
+        /* Equal card heights */
+
+        .technology-news-desktop .card-body {
+            min-height: 230px;
+        }
+
+        /* Mobile: One card */
+
+        @media (max-width: 767px) {
+            .technology-news-desktop {
+                display: none;
+            }
+
+            .technology-news-mobile {
+                display: block;
+                margin-top: -3rem;
+                padding: 0 30px;
+                width: 100%;
+            }
+
+            .technology-news-mobile .technology-news-card {
+                width: 100%;
+            }
+
+            .technology-news-mobile .card-body {
+                min-height: 200px;
+            }
+        }
+    </style>
+
+</div>
+
 
 
 <div class="site-section bg-image overlay" style="background-image: url('/static/images/164.jpg')">
@@ -171,12 +516,14 @@
         <div class="row justify-content-center">
             <div class="col-md-7 text-center">
                 <h2 class="font-weight-bold text-white" style="color: #000 !important;">Join and Trip With Us</h2>
-                <p class="text-white" style="color: #000 !important; font-weight: 550 !important;">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Delectus ut,
+                <p class="text-white" style="color: #000 !important; font-weight: 550 !important;">Lorem ipsum dolor sit
+                    amet, consectetur adipisicing elit. Delectus ut,
                     doloremque quo molestiae nesciunt officiis veniam, beatae dignissimos!</p>
                 <p class="mb-0"><a href="#" class="btn btn-primary text-white py-3 px-4">Get In Touch</a></p>
             </div>
         </div>
     </div>
+
 </div>
 
 {% endblock %}

@@ -65,3 +65,14 @@ class PostSerializer(serializers.ModelSerializer):
         )
         return super().create(validated_data)
 
+
+
+class TechnologyNewsSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    title = serializers.CharField()
+    url = serializers.URLField(allow_null=True)
+    image = serializers.URLField(allow_null=True)
+    score = serializers.IntegerField(allow_null=True)
+    by = serializers.CharField(allow_null=True)
+    time = serializers.IntegerField(allow_null=True)
+    published_at = serializers.DateTimeField(allow_null=True)

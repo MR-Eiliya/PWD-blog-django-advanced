@@ -4,6 +4,8 @@ from .forms import ContactForm
 from .models import Contact
 from django.urls import reverse_lazy
 from blog.models import Post
+from blog.news_service import get_technology_news
+
 
 
 class IndexView(TemplateView):
@@ -19,6 +21,7 @@ class IndexView(TemplateView):
             Post.objects.filter(status=True)
             .order_by("-published_date")[:3]
         )
+        context["technology_news"] = get_technology_news()
         return context
 
 
