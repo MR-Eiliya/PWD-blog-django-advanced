@@ -22,3 +22,15 @@ services:
       - "5001:80"
     restart: unless-stopped
 
+
+
+  locust:
+    build: .
+    container_name: locust_blog
+    command: locust -f /locust/locustfile.py --host http://backend:8020 --web-host 0.0.0.0
+    volumes:
+      - ./locust:/locust
+    ports:
+      - "8089:8089"
+    depends_on:
+      - backend
