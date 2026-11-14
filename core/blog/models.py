@@ -1,3 +1,4 @@
+
 from django.db import models
 from django.utils.text import slugify
 from django.urls import reverse
@@ -28,9 +29,16 @@ class Post(models.Model):
     def category_url(self):
         if self.category and self.category.slug:
             return reverse(
-                "blog:category-posts", kwargs={"category_slug": self.category.slug}
+                "blog:category-posts",
+                kwargs={"category_slug": self.category.slug},
             )
         return None
+
+    def get_absolute_api_url(self):
+        return reverse(
+            "blog:api-v1:post-detail",
+            kwargs={"pk": self.pk},
+        )
 
 
 class Category(models.Model):
@@ -55,7 +63,11 @@ class Comment(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
     parent = models.ForeignKey(
-        "self", null=True, blank=True, on_delete=models.CASCADE, related_name="replies"
+        "self",
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+        related_name="replies",
     )
 
     class Meta:
