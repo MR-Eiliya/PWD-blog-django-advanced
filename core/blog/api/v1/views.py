@@ -1,7 +1,4 @@
-from rest_framework.permissions import (
-    IsAuthenticated
-)
-from .serializers import PostSerializer, CategorySerializer
+from .serializers import PostSerializer, CategorySerializer, TechnologyNewsSerializer
 from ...models import Post, Category
 from rest_framework import viewsets
 
@@ -9,6 +6,10 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 from .pagination import DefaultPagination
 from .permissions import IsOwnerOrReadOnly, IsAdminOrReadOnly
+from ...news_service import get_technology_news
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
 
 class PostModelViewSet(viewsets.ModelViewSet):
@@ -27,3 +28,13 @@ class CategoryModelViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAdminOrReadOnly]
     serializer_class = CategorySerializer
     queryset = Category.objects.all()
+
+
+
+class TechnologyNewsAPIView(APIView):
+
+    def get(self, request):
+        news = get_technology_news()
+        serializer = TechnologyNewsSerializer(news, many=True)
+
+        return Response(serializer.data)
