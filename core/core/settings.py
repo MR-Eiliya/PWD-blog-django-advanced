@@ -215,3 +215,23 @@ EMAIL_PORT = 25
 EMAIL_USE_TLS = False
 EMAIL_USE_SSL = False
 DEFAULT_FROM_EMAIL = "admin@admin.com"
+
+
+
+# Celery settings
+CELERY_BROKER_URL = "redis://redis:6379/0"
+CELERY_RESULT_BACKEND = "redis://redis:6379/0"
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
+CELERY_TIMEZONE = TIME_ZONE
+
+
+from celery.schedules import crontab
+
+CELERY_BEAT_SCHEDULE = {
+    "delete-latest-posts-every-5-minutes": {
+        "task": "blog.tasks.delete_latest_posts",
+        "schedule": crontab(minute="*/5"),
+    },
+}
