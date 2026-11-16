@@ -6,11 +6,15 @@ from django.contrib.auth import (
 from .forms import (
     CustomLoginForm,
     CustomUserCreationForm,
+    ProfileUpdateForm
 )
 from django.views import View
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.views import LogoutView
+from django.contrib.auth.decorators import login_required
+from .models import Profile
+from blog.models import Post
 
 User = get_user_model()
 
@@ -93,3 +97,48 @@ class AuthView(View):
 
 class CustomLogoutView(LogoutView):
     next_page = "/"
+
+
+
+@login_required
+def profile_view(request):
+    profile, created = Profile.objects.get_or_create(user=request.user)
+
+    recent_posts = Post.objects.filter(
+        status=True
+    ).order_by("-published_date")[:4]
+
+    return render(
+        request,
+        "accounts/profile.html",
+        {
+            "profile": profile,
+            "recent_posts": recent_posts,
+        }
+    )
+
+
+@login_required
+def edit_profile_view(request):
+    profile, created = Profile.objects.get_or_create(
+        user=request.user
+    )
+
+    if request.method == "POST":
+        form = ProfileUpdateForm(
+            request.POST,
+            instance=profile
+        )
+
+        if form.is_valid():
+            form.save()
+            return redirect("accounts:profile")
+
+    else:
+        form = ProfileUpdateForm(instance=profile)
+
+    return render(
+        request,
+        "accounts/edit_profile.html",
+        {"form": form}
+    )
