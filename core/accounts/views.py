@@ -6,13 +6,18 @@ from django.contrib.auth import (
 from .forms import (
     CustomLoginForm,
     CustomUserCreationForm,
+    ProfileUpdateForm
 )
 from django.views import View
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.views import LogoutView
+from django.contrib.auth.decorators import login_required
+from .models import Profile
+from blog.models import Post
 
 User = get_user_model()
+
 
 class AuthView(View):
     template_name = "accounts/auth.html"
@@ -20,21 +25,23 @@ class AuthView(View):
     def get(self, request):
         if request.user.is_authenticated:
             return redirect("website:index")
-        
-        return render(request, self.template_name,{
-            "login_form": CustomLoginForm(),
-            "register_form": CustomUserCreationForm(),
-        })
-    
+
+        return render(
+            request,
+            self.template_name,
+            {
+                "login_form": CustomLoginForm(),
+                "register_form": CustomUserCreationForm(),
+            },
+        )
 
     def post(self, request):
         if "login_submit" in request.POST:
             return self.handle_login(request)
         elif "register_submit" in request.POST:
             return self.handle_register(request)
-        
+
         return redirect("accounts:auth")
-    
 
     def handle_login(self, request):
         login_form = CustomLoginForm(request.POST)
@@ -50,11 +57,7 @@ class AuthView(View):
                 user_obj = User.objects.filter(username=identifier).first()
 
             if user_obj:
-                user = authenticate(
-                    request,
-                    username=user_obj.email, 
-                    password=password
-                )
+                user = authenticate(request, username=user_obj.email, password=password)
 
                 if user:
                     login(request, user)
@@ -63,29 +66,79 @@ class AuthView(View):
 
             login_form.add_error(None, "Invalid credentials")
 
-        return render(request, self.template_name, {
-            "login_form": login_form,
-            "register_form": register_form,
-        })
-    
+        return render(
+            request,
+            self.template_name,
+            {
+                "login_form": login_form,
+                "register_form": register_form,
+            },
+        )
 
     def handle_register(self, request):
         register_form = CustomUserCreationForm(request.POST)
         login_form = CustomLoginForm()
-
 
         if register_form.is_valid():
             user = register_form.save()
             login(request, user)
             messages.success(request, "your account created successfully!")
             return redirect("website:index")
-        
-        return render(request, self.template_name, {
-            "login_form": login_form,
-            "register_form": register_form,
-        })
-    
+
+        return render(
+            request,
+            self.template_name,
+            {
+                "login_form": login_form,
+                "register_form": register_form,
+            },
+        )
 
 
 class CustomLogoutView(LogoutView):
     next_page = "/"
+
+
+
+@login_required
+def profile_view(request):
+    profile, created = Profile.objects.get_or_create(user=request.user)
+
+    recent_posts = Post.objects.filter(
+        status=True
+    ).order_by("-published_date")[:4]
+
+    return render(
+        request,
+        "accounts/profile.html",
+        {
+            "profile": profile,
+            "recent_posts": recent_posts,
+        }
+    )
+
+
+@login_required
+def edit_profile_view(request):
+    profile, created = Profile.objects.get_or_create(
+        user=request.user
+    )
+
+    if request.method == "POST":
+        form = ProfileUpdateForm(
+            request.POST,
+            instance=profile
+        )
+
+        if form.is_valid():
+            form.save()
+            return redirect("accounts:profile")
+
+    else:
+        form = ProfileUpdateForm(instance=profile)
+
+    return render(
+        request,
+        "accounts/edit_profile.html",
+        {"form": form}
+    )

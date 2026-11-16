@@ -23,7 +23,6 @@ class PostModelViewSet(viewsets.ModelViewSet):
     pagination_class = DefaultPagination
 
 
-
 class CategoryModelViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAdminOrReadOnly]
     serializer_class = CategorySerializer

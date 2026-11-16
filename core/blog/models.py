@@ -1,3 +1,4 @@
+
 from django.db import models
 from django.utils.text import slugify
 from django.urls import reverse
@@ -14,29 +15,32 @@ class Post(models.Model):
     content = models.TextField()
     status = models.BooleanField()
     category = models.ForeignKey("Category", on_delete=models.SET_NULL, null=True)
-    
+
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
     published_date = models.DateTimeField()
 
     def __str__(self):
         return self.title
-    
+
     def get_snippet(self):
         return self.content[0:5]
-    
+
     def category_url(self):
         if self.category and self.category.slug:
-            return reverse('blog:category-posts', kwargs={'category_slug':self.category.slug})
+            return reverse(
+                "blog:category-posts",
+                kwargs={"category_slug": self.category.slug},
+            )
         return None
-    
+
     def get_absolute_api_url(self):
         return reverse(
             "blog:api-v1:post-detail",
-            kwargs={"pk": self.pk}
+            kwargs={"pk": self.pk},
         )
-    
-    
+
+
 class Category(models.Model):
     name = models.CharField(max_length=255)
     slug = models.SlugField(blank=True, unique=True)
@@ -50,7 +54,6 @@ class Category(models.Model):
         return self.name
 
 
-
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     email = models.EmailField()
@@ -60,21 +63,15 @@ class Comment(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
     parent = models.ForeignKey(
-       "self",
+        "self",
         null=True,
         blank=True,
         on_delete=models.CASCADE,
-        related_name="replies"
+        related_name="replies",
     )
 
     class Meta:
         ordering = ["-created_date"]
-    
+
     def __str__(self):
         return self.name
-
-
-
-
-
-    

@@ -5,13 +5,11 @@ from django.urls import path
 app_name = "api-v1"
 
 router = SimpleRouter()
-router.register("posts", 
-                views.PostModelViewSet, 
-                basename="post")
+router.register("posts", views.PostModelViewSet, basename="post")
 
-router.register("categories", 
-                views.CategoryModelViewSet, 
-                basename="category")
+router.register("categories", views.CategoryModelViewSet, basename="category")
+
+
 
 urlpatterns = router.urls + [
     path(
